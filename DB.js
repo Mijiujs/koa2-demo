@@ -1,8 +1,8 @@
 let mysql = require('mysql')
 let connection = mysql.createConnection({
-    host: 'test.jinxin.live',
-    user: 'root',
-    password: 'Knoten123456',
+    host: '',
+    user: '',
+    password: '',
     database: 'lpr'
 });
 connection.connect();
