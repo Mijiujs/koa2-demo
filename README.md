@@ -5,14 +5,45 @@
 
 写接口对其进行CRUD操作
 
-koa.js 为文件主要入口，引入了koa框架、koa-router路由、koa2-cors跨域、bodyParser和自写的controller
+###  koa.js
+为文件主要入口，引入了koa框架、koa-router路由、koa2-cors跨域、bodyParser和自写的controller等
 
-DB.js 连接数据库
+### DB.js
+连接数据库，以及执行数据库操作，在API文件被调用
 
-controller.js 读取API文件下的每个js文件，统一进行路由处理
+### controller.js 
+读取API文件下的每个js文件，统一进行路由处理
 
-API文件下的js文件 为对应数据表进行crud操作
+### API文件下的js文件
+为对应数据表进行crud操作。详细看user.js
 ***
+# 开发中遇到的问题
+### ctx.body在mysql query的回调函数中无法赋值
+在 async 函数内，使用await来执行异步操作，而await 会直接解析 Promise 的resolve 或者reject 中的值。对于有回调函数的操作，并不会被 async 等待，而直接执行，所以在回调函数中书写的ctx.body = results 操作时 页面已经返回，且并未获取到数据库返回的值。
+
+解决方法： 将 query 函数外部包含一个 new Promise 函数，通过promise 来 resolve （results），来配合await 操作完成 异步操作
+
+```
+const connection = require('./mysql');
+const query = function (sql,arg) {
+    return new Promise((resolve, reject) => {
+        connection.query(sql, arg, function (error, results) {
+            if(error){
+                reject(error);
+            }else{
+                resolve(results)
+            }
+        });
+    })
+}
+```
+```
+var fn_hello = async (ctx, next) => {
+    var name = ctx.params.name;
+    let results = await query('SELECT * FROM first_grade WHERE grade_age=?',[12]);
+    ctx.response.body = env.render('hello.html', { name: name, age: 12, data: results });
+};
+```
 
 # 数据库操作语句
 因为直接对数据库操作，因此又去学了数据库部分语句补充在从次
