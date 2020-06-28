@@ -10,7 +10,9 @@
     "koa2-cors": "^2.0.6",
     "mosca": "^2.8.3",
     "mqtt": "^3.0.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "vue": "^2.6.11",
+    "vue-server-renderer": "^2.6.11"
   },
   "devDependencies": {},
   "scripts": {
